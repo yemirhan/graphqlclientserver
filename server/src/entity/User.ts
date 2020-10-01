@@ -1,9 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
-import { ObjectType, Field, Int } from 'type-graphql';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  OneToMany,
+} from 'typeorm';
+import { ObjectType, Field, ID } from 'type-graphql';
+import { Project } from './Project';
 @ObjectType()
 @Entity('users')
 export class User extends BaseEntity {
-  @Field(() => Int)
+  @Field(() => ID)
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -13,4 +20,7 @@ export class User extends BaseEntity {
 
   @Column()
   password: string;
+
+  @OneToMany(() => Project, (project) => project.user)
+  project: Project[];
 }

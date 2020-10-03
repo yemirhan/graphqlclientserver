@@ -10,7 +10,6 @@ import {
 import { getConnection } from 'typeorm';
 
 import { Columns } from './entity/Columns';
-
 import { Project } from './entity/Project';
 import { User } from './entity/User';
 
@@ -52,7 +51,7 @@ export class DataResolver {
   async addProject(
     @Arg('userId') userId: number,
     @Arg('project') project: ProjectInput,
-    @Arg('columns') column: ColumnInput
+    @Arg('columnsData', () => [ColumnInput]) columns: ColumnInput[]
   ) {
     try {
       //Project.insert(project);
@@ -62,9 +61,15 @@ export class DataResolver {
       await getConnection()
         .getRepository(Project)
         .insert({ user, projectName: project.projectName });
-      await Columns.insert({
-        key: column.key,
-        value: column.value,
+      const proj = await getConnection()
+        .getRepository(Project)
+        .findOne({ where: { projectName: project.projectName } });
+      columns.forEach((column) => {
+        Columns.insert({
+          project: proj,
+          key: column.key,
+          value: column.value,
+        });
       });
     } catch (err) {
       console.log(err);

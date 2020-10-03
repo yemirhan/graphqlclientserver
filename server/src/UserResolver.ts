@@ -7,12 +7,14 @@ import {
   Field,
   Ctx,
   UseMiddleware,
+  Int,
 } from 'type-graphql';
 import { User } from './entity/User';
 import { hash, compare } from 'bcryptjs';
 import { ExpressContext } from './ExpressContext';
 import { createAccessToken, createRefreshToken } from './auth';
 import { isAuth } from './isAuth';
+import { getConnection } from 'typeorm';
 
 @ObjectType()
 class LoginResponse {
@@ -36,6 +38,15 @@ export class UserResolver {
   users() {
     return User.find();
   }
+
+  @Mutation(() => Boolean)
+  async revokeAccessTokensForUser(@Arg('userId', () => Int) userId: number) {
+    await getConnection()
+      .getRepository(User)
+      .increment({ id: userId }, 'tokenVersion', 1);
+    return true;
+  }
+
   @Mutation(() => Boolean)
   async register(
     @Arg('email') email: string,

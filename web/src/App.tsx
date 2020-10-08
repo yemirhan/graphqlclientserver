@@ -1,7 +1,7 @@
-import { gql, useQuery } from '@apollo/client'
-import React from 'react'
-import { Spinner } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { Container, Spinner } from 'react-bootstrap'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
+import { setAccessToken } from './accessToken'
 import About from './components/About'
 import { Footer } from './components/Footer'
 
@@ -11,19 +11,28 @@ import Navigation from './components/Navigation'
 import Terms from './components/Terms'
 
 function App() {
-  const { data, loading } = useQuery(gql`
-    {
-      hello
-    }
-  `)
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    fetch('http://localhost:4000/refresh_token', {
+      method: 'POST',
+      credentials: 'include',
+    }).then(async (x) => {
+      const { accessToken } = await x.json()
+      setAccessToken(accessToken)
+      setLoading(false)
+    })
+  }, [])
+
   if (loading) {
     return (
-      <Spinner animation="border" role="status">
-        <span className="sr-only">Loading...</span>
-      </Spinner>
+      <Container fluid>
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      </Container>
     )
   }
-  console.log(JSON.stringify(data))
+
   return (
     <BrowserRouter>
       <Navigation />

@@ -1,20 +1,30 @@
 import React, { useState } from 'react'
-import { Container, Row } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
+import { useRegisterMutation } from '../generated/graphql'
 import MovingBanner from './MovingBanner'
 
 export default function GuestPage() {
-  const [username, setUsername] = useState()
-  const [email, setEmail] = useState()
-  const [password, setPassword] = useState()
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [register] = useRegisterMutation()
 
   async function handleSubmit(e: any) {
     e.preventDefault()
-    try {
-      console.log('User was successfully created.')
-    } catch (e) {
-      console.log('There was an error.')
-    }
+    console.log('form submitted!')
+    const response = await register({
+      variables: {
+        name,
+        email,
+        password,
+      },
+    })
+    console.log(response)
+    setName('')
+    setEmail('')
+    setPassword('')
   }
+
   return (
     <>
       <MovingBanner />
@@ -24,16 +34,17 @@ export default function GuestPage() {
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="username-register" className="text-muted mb-1">
-                  <small>Username</small>
+                  <small>Name</small>
                 </label>
                 <input
-                  // onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setName(e.target.value)}
                   id="username-register"
                   name="username"
                   className="form-control"
                   type="text"
                   placeholder="Pick a username"
                   autoComplete="off"
+                  value={name}
                 />
               </div>
               <div className="form-group">
@@ -41,13 +52,14 @@ export default function GuestPage() {
                   <small>Email</small>
                 </label>
                 <input
-                  // onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   id="email-register"
                   name="email"
                   className="form-control"
                   type="text"
                   placeholder="you@example.com"
                   autoComplete="off"
+                  value={email}
                 />
               </div>
               <div className="form-group">
@@ -55,12 +67,13 @@ export default function GuestPage() {
                   <small>Password</small>
                 </label>
                 <input
-                  // onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   id="password-register"
                   name="password"
                   className="form-control"
                   type="password"
                   placeholder="Create a password"
+                  value={password}
                 />
               </div>
               <button

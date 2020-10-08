@@ -1,18 +1,40 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Container } from 'react-bootstrap'
-
+import { setAccessToken } from '../accessToken'
+import { useLoginMutation } from '../generated/graphql'
 export default function LoginPage() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [login] = useLoginMutation()
+
+  async function handleSubmit(e: any) {
+    e.preventDefault()
+    console.log('form submitted!')
+    const response = await login({
+      variables: {
+        email,
+        password,
+      },
+    })
+    console.log(response)
+    if (response && response.data) {
+      setAccessToken(response.data.login.accessToken)
+    }
+
+    setEmail('')
+    setPassword('')
+  }
   return (
     <Container>
       <div className="row align-items-center justify-content-center">
         <div className="col-lg-5 pl-lg-5 pb-3 py-lg-5">
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email-register" className="text-muted mb-1">
                 <small>Email</small>
               </label>
               <input
-                // onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 id="email-register"
                 name="email"
                 className="form-control"
@@ -26,7 +48,7 @@ export default function LoginPage() {
                 <small>Password</small>
               </label>
               <input
-                // onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 id="password-register"
                 name="password"
                 className="form-control"

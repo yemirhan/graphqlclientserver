@@ -16,14 +16,19 @@ import cors from 'cors'
   const app = express()
   await createConnection()
   app.use(cookieParser())
-  app.use(cors())
+  app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    })
+  )
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [UserResolver, DataResolver],
     }),
     context: ({ req, res }) => ({ req, res }),
   })
-  apolloServer.applyMiddleware({ app })
+  apolloServer.applyMiddleware({ app, cors: false })
   app.get('/', (_req: Request, res: Response) => {
     res.send('Hello')
   })

@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql'
 import {
   Entity,
   Column,
@@ -6,27 +6,27 @@ import {
   BaseEntity,
   OneToMany,
   ManyToOne,
-} from 'typeorm';
-import { Columns } from './Columns';
-import { User } from './User';
+} from 'typeorm'
+import { Columns } from './Columns'
+import { User } from './User'
 
 @ObjectType()
-@Entity('projects')
+@Entity('newprojects')
 export class Project extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Field()
   @Column()
-  projectName: string;
+  projectName: string
 
   @Field(() => [Columns])
   @OneToMany(() => Columns, (columns) => columns.project, {
     cascade: ['insert'],
   })
-  columns: Columns[];
+  columns: Columns[]
 
   @ManyToOne(() => User, (user) => user.project)
-  user: User;
+  user: User
 }

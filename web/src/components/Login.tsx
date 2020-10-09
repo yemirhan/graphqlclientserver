@@ -1,28 +1,31 @@
-import React, { useState } from 'react'
-import { Container } from 'react-bootstrap'
-import { setAccessToken } from '../accessToken'
-import { useLoginMutation } from '../generated/graphql'
-export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [login] = useLoginMutation()
+import React, { useState } from "react";
+import { Container } from "react-bootstrap";
+import { setAccessToken } from "../accessToken";
+import { useLoginMutation } from "../generated/graphql";
+import { withRouter } from "react-router-dom";
+
+function Login(props: any) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [login] = useLoginMutation();
 
   async function handleSubmit(e: any) {
-    e.preventDefault()
-    console.log('form submitted!')
+    e.preventDefault();
+    console.log("form submitted!");
     const response = await login({
       variables: {
         email,
         password,
       },
-    })
-    console.log(response)
+    });
+    console.log(response);
     if (response && response.data) {
-      setAccessToken(response.data.login.accessToken)
+      setAccessToken(response.data.login.accessToken);
+      props.history.push("/");
     }
 
-    setEmail('')
-    setPassword('')
+    setEmail("");
+    setPassword("");
   }
   return (
     <Container>
@@ -66,5 +69,6 @@ export default function LoginPage() {
         </div>
       </div>
     </Container>
-  )
+  );
 }
+export default withRouter(Login);

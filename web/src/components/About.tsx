@@ -1,9 +1,9 @@
-import React from 'react'
-import { Container } from 'react-bootstrap'
+import React from "react";
+import { Container } from "react-bootstrap";
 
 export default function About() {
   return (
-    <Container style={{ marginTop: 40 }}>
+    <Container style={{ marginTop: 40, marginBottom: 40 }}>
       <h2>About Us</h2>
       <p className="lead text-muted">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
@@ -26,5 +26,5 @@ export default function About() {
         consequatur cupiditate!
       </p>
     </Container>
-  )
+  );
 }

@@ -1,63 +1,60 @@
-import React, { useEffect, useState } from 'react'
-import { Container, Spinner } from 'react-bootstrap'
-import { Switch, Route, BrowserRouter } from 'react-router-dom'
-import { setAccessToken } from './accessToken'
-import About from './components/About'
-import { Footer } from './components/Footer'
+import React, { useEffect, useState } from "react";
+import { Container, Spinner } from "react-bootstrap";
+import { Switch, Route, BrowserRouter } from "react-router-dom";
+import { getAccessToken, setAccessToken } from "./accessToken";
 
-import GuestPage from './components/GuestPage'
-import LoginPage from './components/LoginPage'
-import Navigation from './components/Navigation'
-import Terms from './components/Terms'
-import LoggedIn from './pages/LoggedIn'
-import './style/loading.css'
+import LoginPage from "./pages/LoginPage";
+
+import HomePage from "./pages/HomePage";
+import LoggedIn from "./pages/LoggedIn";
+import "./style/loading.css";
+import AboutPage from "./pages/AboutPage";
+import TermsPage from "./pages/TermsPage";
 function App() {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    fetch('http://localhost:4000/refresh_token', {
-      method: 'POST',
-      credentials: 'include',
+    fetch("http://localhost:4000/refresh_token", {
+      method: "POST",
+      credentials: "include",
     }).then(async (x) => {
-      const { accessToken } = await x.json()
-      setAccessToken(accessToken)
-      setLoading(false)
-    })
-  }, [])
+      const { accessToken } = await x.json();
+      setAccessToken(accessToken);
+      setLoading(false);
+    });
+  }, []);
 
+  let loggg = false;
   if (loading) {
     return (
-      <Container className={'spinner'} fluid>
+      <Container className={"spinner"} fluid>
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>
       </Container>
-    )
+    );
+  }
+  if (getAccessToken()) {
+    loggg = true;
   }
 
   return (
     <BrowserRouter>
-      <Navigation />
-
       <Switch>
         <Route path="/" exact>
-          <GuestPage />
+          {loggg ? <LoggedIn /> : <HomePage />}
         </Route>
         <Route path="/login">
           <LoginPage />
         </Route>
         <Route path="/about">
-          <About />
+          <AboutPage />
         </Route>
         <Route path="/terms">
-          <Terms />
-        </Route>
-        <Route path="/user">
-          <LoggedIn />
+          <TermsPage />
         </Route>
       </Switch>
-      <Footer />
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,0 +1,9 @@
+query UserProjects($userId: Int!){
+  projectsOfUser(userId: $userId) {
+    projectName
+    columns {
+      key
+      value
+    }
+  }
+}

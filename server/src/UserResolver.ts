@@ -8,82 +8,101 @@ import {
   Ctx,
   UseMiddleware,
   Int,
-} from 'type-graphql'
-import { User } from './entity/User'
-import { hash, compare } from 'bcryptjs'
-import { ExpressContext } from './ExpressContext'
-import { createAccessToken, createRefreshToken } from './auth'
-import { isAuth } from './isAuth'
-import { getConnection } from 'typeorm'
+} from "type-graphql";
+import { User } from "./entity/User";
+import { hash, compare } from "bcryptjs";
+import { ExpressContext } from "./ExpressContext";
+import { createAccessToken, createRefreshToken } from "./auth";
+import { isAuth } from "./isAuth";
+import { getConnection } from "typeorm";
+import { verify } from "jsonwebtoken";
 
 @ObjectType()
 class LoginResponse {
   @Field()
-  accessToken: string
+  accessToken: string;
 }
 
 @Resolver()
 export class UserResolver {
   @Query(() => String)
   hello() {
-    return 'hi!'
+    return "hi!";
   }
   @Query(() => String)
   @UseMiddleware(isAuth)
   bye(@Ctx() { payload }: ExpressContext) {
-    console.log(payload)
-    return `your user id is ${payload!.userId}`
+    console.log(payload);
+    return `your user id is ${payload!.userId}`;
   }
   @Query(() => [User])
   users() {
-    return User.find()
+    return User.find();
+  }
+
+  @Query(() => User, { nullable: true })
+  me(@Ctx() context: ExpressContext) {
+    const authorization = context.req.headers["authorization"];
+
+    if (!authorization) {
+      return null;
+    }
+
+    try {
+      const token = authorization.split(" ")[1];
+      const payload: any = verify(token, process.env.ACCESS_TOKEN_SECRET!);
+      return User.findOne(payload.userId);
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
   }
 
   @Mutation(() => Boolean)
-  async revokeAccessTokensForUser(@Arg('userId', () => Int) userId: number) {
+  async revokeAccessTokensForUser(@Arg("userId", () => Int) userId: number) {
     await getConnection()
       .getRepository(User)
-      .increment({ id: userId }, 'tokenVersion', 1)
-    return true
+      .increment({ id: userId }, "tokenVersion", 1);
+    return true;
   }
 
   @Mutation(() => Boolean)
   async register(
-    @Arg('name') name: string,
-    @Arg('email') email: string,
-    @Arg('password') password: string
+    @Arg("name") name: string,
+    @Arg("email") email: string,
+    @Arg("password") password: string
   ) {
-    const hashedPass = await hash(password, 12)
+    const hashedPass = await hash(password, 12);
     try {
       await User.insert({
         name,
         email,
         password: hashedPass,
-      })
+      });
     } catch (err) {
-      console.log(err)
-      return false
+      console.log(err);
+      return false;
     }
-    return true
+    return true;
   }
   @Mutation(() => LoginResponse)
   async login(
-    @Arg('email') email: string,
-    @Arg('password') password: string,
+    @Arg("email") email: string,
+    @Arg("password") password: string,
     @Ctx() { res }: ExpressContext
   ): Promise<LoginResponse> {
-    const user = await User.findOne({ where: { email } })
+    const user = await User.findOne({ where: { email } });
     if (!user) {
-      throw new Error('User does not exists')
+      throw new Error("User does not exists");
     }
-    const valid = await compare(password, user.password)
+    const valid = await compare(password, user.password);
     if (!valid) {
-      throw new Error('wrong password!')
+      throw new Error("wrong password!");
     }
     //login succesful
-    res.cookie('jid', createRefreshToken(user), { httpOnly: true })
+    res.cookie("jid", createRefreshToken(user), { httpOnly: true });
     return {
       accessToken: createAccessToken(user),
-    }
+    };
   }
 }

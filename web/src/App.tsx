@@ -9,7 +9,8 @@ import GuestPage from './components/GuestPage'
 import LoginPage from './components/LoginPage'
 import Navigation from './components/Navigation'
 import Terms from './components/Terms'
-
+import LoggedIn from './pages/LoggedIn'
+import './style/loading.css'
 function App() {
   const [loading, setLoading] = useState(true)
   useEffect(() => {
@@ -25,7 +26,7 @@ function App() {
 
   if (loading) {
     return (
-      <Container fluid>
+      <Container className={'spinner'} fluid>
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>
@@ -49,6 +50,9 @@ function App() {
         </Route>
         <Route path="/terms">
           <Terms />
+        </Route>
+        <Route path="/user">
+          <LoggedIn />
         </Route>
       </Switch>
       <Footer />

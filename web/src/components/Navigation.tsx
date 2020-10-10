@@ -1,6 +1,7 @@
-import React from 'react'
-import { Navbar, Form, Button, Container } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Navbar, Form, Button, Container } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { getAccessToken } from "../accessToken";
 export default function Navigation() {
   return (
     <Navbar bg="dark" variant="dark">
@@ -10,11 +11,17 @@ export default function Navigation() {
         </Navbar.Brand>
 
         <Form inline>
-          <Link to="/login">
-            <Button variant="primary">Login</Button>
-          </Link>
+          {getAccessToken() ? (
+            <Link to="/user">
+              <Button variant="primary">User Panel</Button>
+            </Link>
+          ) : (
+            <Link to="/login">
+              <Button variant="primary">Login</Button>
+            </Link>
+          )}
         </Form>
       </Container>
     </Navbar>
-  )
+  );
 }

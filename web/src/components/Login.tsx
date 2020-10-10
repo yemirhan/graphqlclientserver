@@ -21,7 +21,7 @@ function Login(props: any) {
     console.log(response);
     if (response && response.data) {
       setAccessToken(response.data.login.accessToken);
-      props.history.push("/");
+      props.history.push("/user");
     }
 
     setEmail("");

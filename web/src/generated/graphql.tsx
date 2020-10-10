@@ -81,7 +81,7 @@ export type MutationLoginArgs = {
 
 export type MutationAddProjectArgs = {
   columnsData: Array<ColumnInput>;
-  project: ProjectInput;
+  projectName: Scalars['String'];
   userId: Scalars['Float'];
 };
 
@@ -93,10 +93,6 @@ export type LoginResponse = {
 export type ColumnInput = {
   key: Scalars['String'];
   value: Scalars['String'];
-};
-
-export type ProjectInput = {
-  projectName: Scalars['String'];
 };
 
 export type ByeQueryVariables = Exact<{ [key: string]: never; }>;

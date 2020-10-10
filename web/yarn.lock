@@ -13664,6 +13664,13 @@ ws@^6.1.2, ws@^6.2.1:
   dependencies:
     async-limiter "~1.0.0"
 
+xlsx-parse-json@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/xlsx-parse-json/-/xlsx-parse-json-3.1.0.tgz#708419b41614cf48f5f72af310f8a91e9eed4e5a"
+  integrity sha512-EshqzOam/pI7YJWy2vjuiXcVCnLwLJtkSCvQhkMojEXrRgqp281PsD93DCcx/NlIOlY4VOV46v+xR1Td8yy2mw==
+  dependencies:
+    xlsx "^0.14.1"
+
 xlsx@^0.14.1:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/xlsx/-/xlsx-0.14.5.tgz#3637e914d791bdca7382816e173f7d725ed0e0d2"

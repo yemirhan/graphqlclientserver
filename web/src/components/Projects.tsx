@@ -1,24 +1,24 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { useMeQuery } from "../generated/graphql";
-import { SalesTable } from "./AddNewProject";
-export default function Projects() {
-  const { data, loading } = useMeQuery();
+import { Link } from "react-router-dom";
 
-  async function clickHandler(e: any) {
-    e.preventDefault();
-    console.log(deneme);
-  }
-  if (loading) {
-    console.log("loading ");
-  }
-  const deneme = data?.me;
+export default function Projects() {
   return (
-    <div>
-      <Button onClick={clickHandler} variant="primary">
-        Primary
-      </Button>{" "}
-      <SalesTable />
-    </div>
+    <>
+      <Link to="/addNewProject">
+        <Button variant="primary" style={{ marginBottom: 10, marginTop: 10 }}>
+          Add a new project
+        </Button>
+      </Link>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Project ID</th>
+            <th>Project Name</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </>
   );
 }

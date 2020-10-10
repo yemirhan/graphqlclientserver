@@ -1,33 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TablePanel } from "./TablePanel";
 import { recentSales } from "../data/tableData";
 import { FileSelector } from "./FileSelector";
-export const SalesTable = () => {
+export const AddNewProject = () => {
+  const [data, setData] = useState({});
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+  if (data === {}) {
+    return <FileSelector setData={setData} />;
+  }
   return (
     <>
-      <TablePanel title="Recent Sales">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Client</th>
-              <th>Description</th>
-              <th>Value</th>
-              <th>Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recentSales.map((sale) => (
-              <tr key={sale.id}>
-                <td>{sale.client}</td>
-                <td>{sale.description}</td>
-                <td>${sale.value}</td>
-                <td>{sale.itemCount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </TablePanel>
-      <FileSelector />
+      <TablePanel title="Recent Sales"></TablePanel>
     </>
   );
 };

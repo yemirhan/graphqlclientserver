@@ -1,9 +1,12 @@
 import React, { useCallback } from "react";
 import { Button } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
-export function FileSelector() {
+import xlsxParser from "xlsx-parse-json";
+export function FileSelector(props: any) {
   const onDrop = useCallback((acceptedFiles) => {
-    console.log(acceptedFiles);
+    xlsxParser.onFileSelection(acceptedFiles[0]).then((data: any) => {
+      props.setData({ ...data }["Sheet1"]);
+    });
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -13,7 +16,7 @@ export function FileSelector() {
       {isDragActive ? (
         <p>Drop the files here ...</p>
       ) : (
-        <Button>click to select files</Button>
+        <Button>click to select file</Button>
       )}
     </div>
   );

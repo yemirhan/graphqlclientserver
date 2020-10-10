@@ -27,7 +27,8 @@
     "react-scripts": "3.4.3",
     "read-excel-file": "^4.0.7",
     "typescript": "~4.0.3",
-    "xlsx": "^0.16.8"
+    "xlsx": "^0.16.8",
+    "xlsx-parse-json": "^3.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

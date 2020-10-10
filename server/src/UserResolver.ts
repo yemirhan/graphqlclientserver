@@ -16,11 +16,14 @@ import { createAccessToken, createRefreshToken } from "./auth";
 import { isAuth } from "./isAuth";
 import { getConnection } from "typeorm";
 import { verify } from "jsonwebtoken";
+import { sendRefreshToken } from "./sendRefreshToken";
 
 @ObjectType()
 class LoginResponse {
   @Field()
   accessToken: string;
+  @Field()
+  userid: number;
 }
 
 @Resolver()
@@ -45,7 +48,7 @@ export class UserResolver {
     const authorization = context.req.headers["authorization"];
 
     if (!authorization) {
-      return null;
+      return { message: "not authorized" };
     }
 
     try {
@@ -54,10 +57,15 @@ export class UserResolver {
       return User.findOne(payload.userId);
     } catch (err) {
       console.log(err);
-      return null;
+      return { message: "an error occurred" };
     }
   }
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { res }: ExpressContext) {
+    sendRefreshToken(res, "");
 
+    return true;
+  }
   @Mutation(() => Boolean)
   async revokeAccessTokensForUser(@Arg("userId", () => Int) userId: number) {
     await getConnection()
@@ -99,10 +107,12 @@ export class UserResolver {
     if (!valid) {
       throw new Error("wrong password!");
     }
+
     //login succesful
-    res.cookie("jid", createRefreshToken(user), { httpOnly: true });
+    sendRefreshToken(res, createRefreshToken(user));
     return {
       accessToken: createAccessToken(user),
+      userid: user.id,
     };
   }
 }

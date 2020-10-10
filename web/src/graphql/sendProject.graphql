@@ -1,0 +1,12 @@
+mutation SendProject($userId: Int!, $projectName: String!, $columnsData: [ColumnInput!]!){
+  addProject(
+    userId: $userId
+    projectName: $projectName
+    columnsData: $columnsData
+  )
+}
+
+input ColumnInput {
+  key: String!
+  value: String!
+}

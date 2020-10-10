@@ -1,13 +1,14 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import { useUserProjectsQuery } from "../generated/graphql";
 
 interface Props {}
-export const Projects: React.FC<Props> = () => {
+export function Projects(props: any) {
+  let match = useRouteMatch();
   const { data, loading, error } = useUserProjectsQuery({
     fetchPolicy: "network-only",
-    variables: { userId: 5 },
+    variables: { userId: Number(localStorage.getItem("novauserid")) },
   });
   if (loading) {
     return <div>loading...</div>;
@@ -21,7 +22,6 @@ export const Projects: React.FC<Props> = () => {
   if (!data) {
     return <div>no data</div>;
   }
-
   return (
     <>
       <Link to="/addNewProject">
@@ -40,7 +40,11 @@ export const Projects: React.FC<Props> = () => {
           {data?.projectsOfUser?.map((project) => (
             <tr key={project.id}>
               <td>{project.id}</td>
-              <td>{project.projectName}</td>
+              <td>
+                <Link to={`${match.url}/projects/:${project.id}`}>
+                  {project.projectName}
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -48,4 +52,4 @@ export const Projects: React.FC<Props> = () => {
       <div></div>
     </>
   );
-};
+}

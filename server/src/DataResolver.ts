@@ -45,7 +45,7 @@ export class DataResolver {
 
   @Mutation(() => Boolean)
   async addProject(
-    @Arg("userId") userId: number,
+    @Arg("userId", () => Int) userId: number,
     @Arg("projectName") projectName: string,
     @Arg("columnsData", () => [ColumnInput]) columns: ColumnInput[]
   ) {

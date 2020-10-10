@@ -11,7 +11,7 @@ export default function Navigation() {
         </Navbar.Brand>
 
         <Form inline>
-          {getAccessToken() ? (
+          {localStorage.getItem("novauserid") ? (
             <Link to="/user">
               <Button variant="primary">User Panel</Button>
             </Link>

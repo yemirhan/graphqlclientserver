@@ -1,6 +1,6 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { ApolloProvider } from '@apollo/client'
+import React from "react";
+import ReactDOM from "react-dom";
+import { ApolloProvider } from "@apollo/client";
 import {
   ApolloClient,
   InMemoryCache,
@@ -8,28 +8,29 @@ import {
   ApolloLink,
   Observable,
   HttpLink,
-} from '@apollo/client'
-import { onError } from '@apollo/client/link/error'
-import { getAccessToken, setAccessToken } from './accessToken'
-import App from './App'
-import { TokenRefreshLink } from 'apollo-link-token-refresh'
-import jwtDecode from 'jwt-decode'
-import 'bootstrap/dist/css/bootstrap.min.css'
-const cache = new InMemoryCache({})
+} from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
+import { getAccessToken, setAccessToken } from "./accessToken";
+import App from "./App";
+import { TokenRefreshLink } from "apollo-link-token-refresh";
+import jwtDecode from "jwt-decode";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+const cache = new InMemoryCache({});
 
 const requestLink = new ApolloLink(
   (operation, forward) =>
     new Observable((observer) => {
-      let handle: any
+      let handle: any;
       Promise.resolve(operation)
         .then((operation) => {
-          const accessToken = getAccessToken()
+          const accessToken = getAccessToken();
           if (accessToken) {
             operation.setContext({
               headers: {
                 authorization: `bearer ${accessToken}`,
               },
-            })
+            });
           }
         })
         .then(() => {
@@ -37,67 +38,68 @@ const requestLink = new ApolloLink(
             next: observer.next.bind(observer),
             error: observer.error.bind(observer),
             complete: observer.complete.bind(observer),
-          })
+          });
         })
-        .catch(observer.error.bind(observer))
+        .catch(observer.error.bind(observer));
 
       return () => {
-        if (handle) handle.unsubscribe()
-      }
+        if (handle) handle.unsubscribe();
+      };
     })
-)
+);
+
 const client = new ApolloClient<NormalizedCacheObject>({
   link: ApolloLink.from([
     new TokenRefreshLink({
-      accessTokenField: 'accessToken',
+      accessTokenField: "accessToken",
       isTokenValidOrUndefined: () => {
-        const token = getAccessToken()
+        const token = getAccessToken();
 
         if (!token) {
-          return true
+          return true;
         }
 
         try {
-          const { exp } = jwtDecode(token)
+          const { exp } = jwtDecode(token);
           if (Date.now() >= exp * 1000) {
-            return false
+            return false;
           } else {
-            return true
+            return true;
           }
         } catch {
-          return false
+          return false;
         }
       },
       fetchAccessToken: () => {
-        return fetch('http://localhost:4000/refresh_token', {
-          method: 'POST',
-          credentials: 'include',
-        })
+        return fetch("http://localhost:4000/refresh_token", {
+          method: "POST",
+          credentials: "include",
+        });
       },
       handleFetch: (accessToken) => {
-        setAccessToken(accessToken)
+        setAccessToken(accessToken);
       },
       handleError: (err) => {
-        console.warn('Your refresh token is invalid. Try to relogin')
-        console.error(err)
+        console.warn("Your refresh token is invalid. Try to relogin");
+        console.error(err);
       },
     }),
     onError(({ graphQLErrors, networkError }) => {
-      console.log(graphQLErrors)
-      console.log(networkError)
+      console.log(graphQLErrors);
+      console.log(networkError);
     }),
     requestLink,
     new HttpLink({
-      uri: 'http://localhost:4000/graphql',
-      credentials: 'include',
+      uri: "http://localhost:4000/graphql",
+      credentials: "include",
     }),
   ]),
   cache,
-})
+});
 
 ReactDOM.render(
   <ApolloProvider client={client}>
     <App />
   </ApolloProvider>,
-  document.getElementById('root')
-)
+  document.getElementById("root")
+);

@@ -18,14 +18,11 @@ function Login(props: any) {
         password,
       },
     });
-    console.log(response);
     if (response && response.data) {
       setAccessToken(response.data.login.accessToken);
+      localStorage.setItem("novauserid", String(response.data.login.userid));
       props.history.push("/user");
     }
-
-    setEmail("");
-    setPassword("");
   }
   return (
     <Container>

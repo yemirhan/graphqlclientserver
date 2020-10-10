@@ -34,26 +34,28 @@ export type QueryProjectArgs = {
 
 export type User = {
   __typename?: 'User';
-  id: Scalars['ID'];
+  id: Scalars['Int'];
   name: Scalars['String'];
   email: Scalars['String'];
 };
 
 export type Project = {
   __typename?: 'Project';
-  id: Scalars['ID'];
+  id: Scalars['Int'];
   projectName: Scalars['String'];
   columns: Array<Columns>;
 };
 
 export type Columns = {
   __typename?: 'Columns';
+  id: Scalars['Int'];
   key: Scalars['String'];
   value: Scalars['String'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  logout: Scalars['Boolean'];
   revokeAccessTokensForUser: Scalars['Boolean'];
   register: Scalars['Boolean'];
   login: LoginResponse;
@@ -82,12 +84,13 @@ export type MutationLoginArgs = {
 export type MutationAddProjectArgs = {
   columnsData: Array<ColumnInput>;
   projectName: Scalars['String'];
-  userId: Scalars['Float'];
+  userId: Scalars['Int'];
 };
 
 export type LoginResponse = {
   __typename?: 'LoginResponse';
   accessToken: Scalars['String'];
+  userid: Scalars['Float'];
 };
 
 export type ColumnInput = {
@@ -121,8 +124,16 @@ export type LoginMutation = (
   { __typename?: 'Mutation' }
   & { login: (
     { __typename?: 'LoginResponse' }
-    & Pick<LoginResponse, 'accessToken'>
+    & Pick<LoginResponse, 'accessToken' | 'userid'>
   ) }
+);
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'logout'>
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -146,6 +157,18 @@ export type RegisterMutationVariables = Exact<{
 export type RegisterMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'register'>
+);
+
+export type SendProjectMutationVariables = Exact<{
+  userId: Scalars['Int'];
+  projectName: Scalars['String'];
+  columnsData: Array<ColumnInput>;
+}>;
+
+
+export type SendProjectMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addProject'>
 );
 
 export type UserProjectsQueryVariables = Exact<{
@@ -241,6 +264,7 @@ export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
     accessToken
+    userid
   }
 }
     `;
@@ -270,6 +294,35 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout
+}
+    `;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, baseOptions);
+      }
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -336,6 +389,38 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const SendProjectDocument = gql`
+    mutation SendProject($userId: Int!, $projectName: String!, $columnsData: [ColumnInput!]!) {
+  addProject(userId: $userId, projectName: $projectName, columnsData: $columnsData)
+}
+    `;
+export type SendProjectMutationFn = Apollo.MutationFunction<SendProjectMutation, SendProjectMutationVariables>;
+
+/**
+ * __useSendProjectMutation__
+ *
+ * To run a mutation, you first call `useSendProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendProjectMutation, { data, loading, error }] = useSendProjectMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      projectName: // value for 'projectName'
+ *      columnsData: // value for 'columnsData'
+ *   },
+ * });
+ */
+export function useSendProjectMutation(baseOptions?: Apollo.MutationHookOptions<SendProjectMutation, SendProjectMutationVariables>) {
+        return Apollo.useMutation<SendProjectMutation, SendProjectMutationVariables>(SendProjectDocument, baseOptions);
+      }
+export type SendProjectMutationHookResult = ReturnType<typeof useSendProjectMutation>;
+export type SendProjectMutationResult = Apollo.MutationResult<SendProjectMutation>;
+export type SendProjectMutationOptions = Apollo.BaseMutationOptions<SendProjectMutation, SendProjectMutationVariables>;
 export const UserProjectsDocument = gql`
     query UserProjects($userId: Int!) {
   projectsOfUser(userId: $userId) {

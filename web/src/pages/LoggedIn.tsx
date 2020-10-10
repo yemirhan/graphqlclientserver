@@ -10,7 +10,7 @@ import {
 import { AddNewProject } from "../components/AddNewProject";
 
 import Dash from "../components/Dash";
-import Projects from "../components/Projects";
+import { Projects } from "../components/Projects";
 
 import "../style/sidebar.css";
 export default function LoggedIn() {

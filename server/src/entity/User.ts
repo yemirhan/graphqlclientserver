@@ -4,30 +4,30 @@ import {
   Column,
   BaseEntity,
   OneToMany,
-} from 'typeorm'
-import { ObjectType, Field, ID } from 'type-graphql'
-import { Project } from './Project'
+} from "typeorm";
+import { ObjectType, Field, Int } from "type-graphql";
+import { Project } from "./Project";
 @ObjectType()
-@Entity('newusers')
+@Entity("newusers")
 export class User extends BaseEntity {
-  @Field(() => ID)
+  @Field(() => Int)
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @Field()
   @Column()
-  name: string
+  name: string;
 
   @Field()
   @Column()
-  email: string
+  email: string;
 
   @Column()
-  password: string
+  password: string;
 
-  @Column('int', { default: 0 })
-  tokenVersion: number
+  @Column("int", { default: 0 })
+  tokenVersion: number;
 
   @OneToMany(() => Project, (project) => project.user)
-  project: Project[]
+  project: Project[];
 }

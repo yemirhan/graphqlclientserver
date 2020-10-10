@@ -157,7 +157,7 @@ export type UserProjectsQuery = (
   { __typename?: 'Query' }
   & { projectsOfUser?: Maybe<Array<(
     { __typename?: 'Project' }
-    & Pick<Project, 'projectName'>
+    & Pick<Project, 'id' | 'projectName'>
     & { columns: Array<(
       { __typename?: 'Columns' }
       & Pick<Columns, 'key' | 'value'>
@@ -339,6 +339,7 @@ export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutatio
 export const UserProjectsDocument = gql`
     query UserProjects($userId: Int!) {
   projectsOfUser(userId: $userId) {
+    id
     projectName
     columns {
       key

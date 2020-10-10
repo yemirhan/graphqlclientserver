@@ -8,6 +8,7 @@ export function FileSelector(props: any) {
       props.setData({ ...data }["Sheet1"]);
     });
   }, []);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (

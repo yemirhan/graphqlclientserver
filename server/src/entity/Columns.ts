@@ -1,27 +1,28 @@
-import { Field, ObjectType } from 'type-graphql'
+import { Field, Int, ObjectType } from "type-graphql";
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   BaseEntity,
   ManyToOne,
-} from 'typeorm'
-import { Project } from './Project'
+} from "typeorm";
+import { Project } from "./Project";
 
 @ObjectType()
-@Entity('newcolumns')
+@Entity("newcolumns")
 export class Columns extends BaseEntity {
+  @Field(() => Int)
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @Field(() => String)
   @Column()
-  key: string
+  key: string;
 
   @Field(() => String)
   @Column()
-  value: string
+  value: string;
 
   @ManyToOne(() => Project, (project) => project.columns)
-  project: Project
+  project: Project;
 }

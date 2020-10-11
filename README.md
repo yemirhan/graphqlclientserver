@@ -10,4 +10,11 @@
 # React için
 - web dosyasına girin.
 - "npm i" diyip tüm dependenciesleri yükleyin.
-- yarn start ile react uygulamasını başlatın. 
+- yarn start ile react uygulamasını başlatın.
+
+# Hatalar
+
+- XLSX dosyasının ilk satırı sırasıyla "key" ve "value olmak zorunda. Kullandığım kütüphanenin bir problemi.
+- Kullanıcıdan çıkış yapoldığında sayfayı yenilemek gerekiyor.
+
+
